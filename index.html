@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/nav.css">
+    <title>Portiogram</title>
+  </head>
+  <body>
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+          <div class="site-mobile-menu-close mt-3">
+            <span class="icon-close2 js-menu-toggle"></span>
+          </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+      </div>
+      <header class="site-navbar site-navbar-target bg-white" role="banner">
+        <div class="container">
+          <div class="row align-items-center position-relative">
+            <div class="col-lg-4">
+              <nav class="site-navigation text-right ml-auto " role="navigation">
+                <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-block">
+                  <li class="active"><a href="index.html" class="nav-link">Home</a></li>
+                  <li><a href="#" class="nav-link">Projects</a></li>
+                  <li><a href="#" class="nav-link">Services</a></li>
+                </ul>
+              </nav>
+            </div>
+            <div class="col-lg-4 text-center">
+              <div class="site-logo">
+                <a href="index.html">Brand</a>
+              </div>
+              <div class="ml-auto toggle-button d-inline-block d-lg-none"><a href="#" class="site-menu-toggle py-5 js-menu-toggle text-black"><span class="icon-menu h3 text-black"></span></a></div>
+            </div>
+            <div class="col-lg-4">
+              <nav class="site-navigation text-left mr-auto " role="navigation">
+                <ul class="site-menu main-menu js-clone-nav ml-auto d-none d-lg-block">
+                  <li><a href="#" class="nav-link">About</a></li>
+                  <li><a href="#" class="nav-link">Contact</a></li>
+                  <li><a href="login.html" class="nav-link">Login</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+      <nav class="navbar">
+        <ul>
+            <li>
+                <a href="#Fashion Designer" class="dot active" data-scroll="Fashion Designer">
+                    <span>Fashion Designer</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#Engineer" class="dot" data-scroll="Engineer">
+                    <span>Engineer</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#Graphic Designer" class="dot" data-scroll="Graphic Designer">
+                    <span>Graphic Designer</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#Android App Developer" class="dot" data-scroll="Android App Developer">
+                    <span>Android App Developer</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#Dancer" class="dot" data-scroll="Dancer">
+                    <span>Dancer</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+      <section class="sec" id="Fashion Designer">
+        <a href="register.html">
+          <img src="https://images.pexels.com/photos/5186869/pexels-photo-5186869.jpeg?cs=srgb&amp;dl=pexels-fiona-art-5186869.jpg&amp;fm=jpg">
+        </a>
+      </section>
+      <section class="sec" id="Engineer">
+        <a href="register.html">
+          <img src="https://images.pexels.com/photos/5186869/pexels-photo-5186869.jpeg?cs=srgb&amp;dl=pexels-fiona-art-5186869.jpg&amp;fm=jpg">
+        </a>
+      </section>
+      <section class="sec" id="Graphic Designer">
+        <a href="register.html">
+          <img src="https://images.pexels.com/photos/5186869/pexels-photo-5186869.jpeg?cs=srgb&amp;dl=pexels-fiona-art-5186869.jpg&amp;fm=jpg">
+        </a>
+      </section>
+      <section class="sec" id="Android App Developer">
+        <a href="register.html">
+          <img src="https://images.pexels.com/photos/5186869/pexels-photo-5186869.jpeg?cs=srgb&amp;dl=pexels-fiona-art-5186869.jpg&amp;fm=jpg">
+        </a>
+      </section>
+      <section class="sec" id="Dancer">
+        <a href="register.html">
+          <img src="https://images.pexels.com/photos/5186869/pexels-photo-5186869.jpeg?cs=srgb&amp;dl=pexels-fiona-art-5186869.jpg&amp;fm=jpg">
+        </a>
+      </section>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
+
+      <script type="text/javascript">
+          $(document).ready(function () {
+              $(window).on("scroll", function () {
+                  var link = $(".navbar a.dot");
+                  var top = $(window).scrollTop();
+
+                  $(".sec").each(function () {
+                      var id = $(this).attr("id");
+                      var height = $(this).height();
+                      var offset = $(this).offset().top - 150;
+                      if (top >= offset && top < offset + height) {
+                          link.removeClass("active");
+                          $(".navbar")
+                              .find('[data-scroll="' + id + '"]')
+                              .addClass("active");
+                      }
+                  });
+              });
+          });
+      </script>
+  
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

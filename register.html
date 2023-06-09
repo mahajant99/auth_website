@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Register</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="css/style.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    </head>
+    <body class="img js-fullheight" style="background-image: url(images/06.jpeg);">
+        <section class="ftco-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 text-center mb-4">
+                        <h2 class="heading-section">Create an account</h2>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="login-wrap p-0">
+                            <form action="#" class="signin-form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="first_name" placeholder="First Name" required />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="last_name" placeholder="Last Name" required />
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control" id="email" placeholder="Email ID" required />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="username" placeholder="Username" required />
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="password" placeholder="Password" required />
+                                    <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" id="submit" class="form-control btn btn-primary submit px-3">Sign Up</button>
+                                </div>
+                            </form>
+                            <p class="w-100 text-center">&mdash; Already have a account ? &mdash;</p>
+                            <a href="login.html" target="_parent"><button type="submit" class="form-control btn btn-primary submit px-3">Login In</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+            import { getDatabase, ref, set, child, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+            import { getAuth, createUserWithEmailAndPassword, sendSignInLinkToEmail, signInWithEmailAndPassword, onAuthStateChanged, 
+                sendEmailVerification, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+            import { getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+        
+            const firebaseConfig = {
+                apiKey: "AIzaSyClgqksS1Qu4Jb6-rlhmiMsd0V1AeF82Ok",
+                authDomain: "portiogram.firebaseapp.com",
+                databaseURL: "https://portiogram-default-rtdb.firebaseio.com",
+                projectId: "portiogram",
+                storageBucket: "portiogram.appspot.com",
+                messagingSenderId: "83448306240",
+                appId: "1:83448306240:web:8cb9bcd7b34877eebddda5",
+                measurementId: "G-HCRKELX8VS"
+            };
+        
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase();
+            const auth = getAuth();
+        
+            // THE REFERENCES
+            const submit = document.getElementById("submit");
+        
+            // VALIDATION (Using regular expressions)
+        
+            function isEmptyOrSpaces(str) {
+                return str == null || str.match(/^ *$/) !== null;
+            }
+        
+            function Validation() {
+                let nameregex = /^[a-zA-Z\s]+$/;
+                let emailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                let userregex = /^[a-zA-Z0-9]{5,}$/;
+        
+                if (isEmptyOrSpaces(first_name.value) || !nameregex.test(first_name.value)) {
+                    alert("The first name should only contain alphabets and cannot be empty");
+                    return true;
+                }
+                if (isEmptyOrSpaces(last_name.value) || !nameregex.test(last_name.value)) {
+                    alert("The last name should only contain alphabets and cannot be empty");
+                    return true;
+                }
+                if (isEmptyOrSpaces(email.value) || !emailregex.test(email.value)) {
+                    alert("Enter a valid email ID and cannot be empty");
+                    return true;
+                }
+                if (isEmptyOrSpaces(username.value) || !userregex.test(username.value)) {
+                    alert("Username can only be alphanumeric, must be at least 5 characters, and cannot contain spaces or be empty");
+                    return true;
+                }
+                return false;
+            }
+        
+            // REGISTER USER TO FIREBASE
+            function RegisterUser() {
+                event.preventDefault();
+                if (Validation()) {
+                    return;
+                }else{
+                var first_name = document.getElementById("first_name").value;
+                var last_name = document.getElementById("last_name").value;
+                var email = document.getElementById("email").value;
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+        
+                createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+        
+                    const dbRef = ref(db);
+                    get(child(dbRef, "UsersList/" + user.uid)).then((snapshot) => {
+                            set(ref(db, "UsersList/" + user.uid),
+                            {
+                                first_name: first_name,
+                                last_name: last_name,
+                                email: email,
+                                username: username
+                            })
+                            .catch((error) => {
+                            alert("Error: " + error);
+                            })
+                    })
+                    sendEmailVerification(auth.currentUser).then(() => {
+                        alert("User Created Successfully! \nEmail verification sent!");
+                    });
+                    // ...
+                }).catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert("The email address is already in use");
+                });
+            }
+        }
+        
+            // ASSIGN THE EVENTS
+            submit.addEventListener("click", RegisterUser);
+        
+        </script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/password.js"></script>
+    </body>
+</html>

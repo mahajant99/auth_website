@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <title>Login</title>
+      <meta charset="utf-8">
+      <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="css/style.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+   </head>
+   <body class="img js-fullheight" style="background-image: url(images/03.jpg);">
+      <section class="ftco-section">
+         <div class="container">
+            <div class="row justify-content-center">
+               <div class="col-md-6 text-center mb-4">
+                  <h2 class="heading-section">Have an account?</h2>
+               </div>
+            </div>
+            <div class="row justify-content-center">
+               <div class="col-md-6 col-lg-4">
+                  <div class="login-wrap p-0">
+                     <form action="#" class="signin-form">
+                        <div class="form-group">
+                           <input type="text" class="form-control" id="email" placeholder="Email ID" required>
+                        </div>
+                        <div class="form-group">
+                           <input id="password" type="password" id="password" class="form-control" placeholder="Password" required>
+                           <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                        </div>
+                        <div class="form-group">
+                           <button type="submit" id="login" class="form-control btn btn-primary submit px-3">Sign In</button>
+                        </div>
+                        <div class="form-group">
+                           <button type="submit" id="display" class="form-control btn btn-primary submit px-3">Display</button>
+                        </div>
+                        <div class="form-group">
+                           <button type="submit" id="signout" class="form-control btn btn-primary submit px-3">Sign Out</button>
+                        </div>
+                        <div class="form-group d-md-flex">
+                           <div class="w-50">
+                              <label class="checkbox-wrap checkbox-primary">Remember Me
+                              <input type="checkbox" id="switch" checked>
+                              <span class="checkmark"></span>
+                              </label>
+                           </div>
+                           <div class="w-50 text-md-right">
+                              <a href="reset_pass.html" style="color: #fff">Forgot Password</a>
+                           </div>
+                        </div>
+                     </form>
+                     <p class="w-100 text-center">&mdash; Don't have an account? &mdash;</p>
+                     <a href="register.html" target="_parent"><button type="submit" class="form-control btn btn-primary submit px-3">Create Account</button></a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <script type="module">
+         // Import the functions you need from the SDKs you need
+         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+         import { getDatabase, ref, set, child, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+         import { getAuth, createUserWithEmailAndPassword, sendSignInLinkToEmail, signInWithEmailAndPassword, onAuthStateChanged,
+            sendEmailVerification, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+         
+         const firebaseConfig = {
+            apiKey: "AIzaSyClgqksS1Qu4Jb6-rlhmiMsd0V1AeF82Ok",
+            authDomain: "portiogram.firebaseapp.com",
+            databaseURL: "https://portiogram-default-rtdb.firebaseio.com",
+            projectId: "portiogram",
+            storageBucket: "portiogram.appspot.com",
+            messagingSenderId: "83448306240",
+            appId: "1:83448306240:web:8cb9bcd7b34877eebddda5",
+            measurementId: "G-HCRKELX8VS"
+         };
+      
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase();
+            const auth = getAuth();
+            const rememberMeCheckbox = document.querySelector('#switch');
+      
+            // Check if remember me is set in local storage
+            if (localStorage.getItem('rememberMe') === 'true') {
+              rememberMeCheckbox.checked = true;
+              document.getElementById("email").value = localStorage.getItem('email');
+              document.getElementById("password").value = localStorage.getItem('password');
+            }
+            
+            // Login User Function
+            function LoginUser() {
+              event.preventDefault();
+              var email = document.getElementById("email").value;
+              var password = document.getElementById("password").value;
+      
+              if (rememberMeCheckbox.checked) {
+                localStorage.setItem('rememberMe', 'true');
+                localStorage.setItem('email', email);
+                localStorage.setItem('password', password);
+              } else {
+                localStorage.removeItem('rememberMe');
+                localStorage.removeItem('email');
+                localStorage.removeItem('password');
+              }
+              
+              signInWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                const dt = new Date();
+                update(ref(db, "UsersList/" + user.uid),
+                {
+                  last_login: dt,
+                })
+                .catch((error) => {
+                  alert("Error: " + error);
+                })
+                alert("User Logged in Successfully!");
+                //window.location="index.html";
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert("Email ID or Password is Invalid");
+              });
+            }
+            
+            function showUserProfile() {
+              event.preventDefault();
+      
+              const dbRef = ref(getDatabase());
+              const user = auth.currentUser;
+      
+              if (user == null){
+                alert("User Not Logged In");
+              }else{
+            
+              get(child(dbRef, "UsersList/" + user.uid)).then((snapshot) => {
+      
+                if (snapshot.exists()) {
+                  console.log(snapshot.val());
+                  alert("User Name: " + snapshot.val().username + "\nFull Name: " + snapshot.val().first_name + " " + snapshot.val().last_name
+                  + "\nEmail ID: " + snapshot.val().email);
+                } else {
+                  console.log("No data available");
+                }
+              }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage)
+              });
+            }
+            }
+      
+      
+      
+            function SignOut(){
+              event.preventDefault();
+              signOut(auth).then(() => {
+                alert("Sign-out successful.");
+              }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage)
+              });
+            }
+      
+            // ASSIGN THE EVENTS
+            display.addEventListener("click", showUserProfile);
+            login.addEventListener("click", LoginUser);
+            signout.addEventListener("click", SignOut);
+      
+         </script>
+      <script src="js/jquery.min.js"></script>
+      <script src="js/password.js"></script>
+   </body>
+</html>
